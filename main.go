@@ -19,8 +19,16 @@ func main() {
 	if err != nil {
 		check(err)
 	}
-	valid := IsValidJson(data)
+	valid := IsValidJson(string(data))
+	if valid == 1 {
+		check(errors.New("Invalid json file"))
+	}
 	fmt.Println(valid)
+	pairs := ExtractKeyValuePairs(string(data))
+	fmt.Println("Extracted key-value pairs:")
+	for k, v := range pairs {
+		fmt.Printf("  %q : %q\n", k, v)
+	}
 }
 
 func check(e error) {
