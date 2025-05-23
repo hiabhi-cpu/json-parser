@@ -30,20 +30,50 @@ func main() {
 	// 	fmt.Printf("  %q : %q\n", k, v)
 	// }
 
-	parsed, validbool := ValidateAndExtractTyped(string(data))
-	if !validbool {
+	// parsed, validbool := ValidateAndExtractTyped(string(data))
+	// if !validbool {
+	// 	fmt.Println("❌ Invalid JSON")
+	// 	return
+	// }
+
+	// fmt.Println("✅ Valid JSON with typed values:")
+	// for k, v := range parsed {
+	// 	fmt.Printf("  %q: %v (%T)\n", k, v, v)
+	// }
+
+	result, ok := ParseJSON(string(data))
+	if !ok {
 		fmt.Println("❌ Invalid JSON")
-		return
+		os.Exit(1)
 	}
 
 	fmt.Println("✅ Valid JSON with typed values:")
-	for k, v := range parsed {
-		fmt.Printf("  %q: %v (%T)\n", k, v, v)
-	}
+	printValue(result, 0)
 }
 
 func check(e error) {
 	if e != nil {
 		panic(e)
+	}
+}
+
+func printValue(val interface{}, indent int) {
+	prefix := strings.Repeat("  ", indent)
+	switch v := val.(type) {
+	case map[string]interface{}:
+		fmt.Println(prefix + "{")
+		for k, v2 := range v {
+			fmt.Printf("%s  %q: ", prefix, k)
+			printValue(v2, indent+1)
+		}
+		fmt.Println(prefix + "}")
+	case []interface{}:
+		fmt.Println(prefix + "[")
+		for _, v2 := range v {
+			printValue(v2, indent+1)
+		}
+		fmt.Println(prefix + "]")
+	default:
+		fmt.Printf("%v (%T)\n", v, v)
 	}
 }
