@@ -19,15 +19,26 @@ func main() {
 	if err != nil {
 		check(err)
 	}
-	valid := IsValidJson(string(data))
-	if valid == 1 {
-		check(errors.New("Invalid json file"))
+	// valid := IsValidJson(string(data))
+	// if valid == 1 {
+	// 	check(errors.New("Invalid json file"))
+	// }
+	// fmt.Println(valid)
+	// pairs := ExtractKeyValuePairs(string(data))
+	// fmt.Println("Extracted key-value pairs:")
+	// for k, v := range pairs {
+	// 	fmt.Printf("  %q : %q\n", k, v)
+	// }
+
+	parsed, validbool := ValidateAndExtractTyped(string(data))
+	if !validbool {
+		fmt.Println("❌ Invalid JSON")
+		return
 	}
-	fmt.Println(valid)
-	pairs := ExtractKeyValuePairs(string(data))
-	fmt.Println("Extracted key-value pairs:")
-	for k, v := range pairs {
-		fmt.Printf("  %q : %q\n", k, v)
+
+	fmt.Println("✅ Valid JSON with typed values:")
+	for k, v := range parsed {
+		fmt.Printf("  %q: %v (%T)\n", k, v, v)
 	}
 }
 
